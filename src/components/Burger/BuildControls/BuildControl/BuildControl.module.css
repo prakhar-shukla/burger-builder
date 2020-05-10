@@ -1,0 +1,22 @@
+.BuildControl{
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+    margin: 5px 0;
+    width: 25%;
+}
+
+.BuildControl button{
+    display: block;
+    font: inherit;
+    padding: 5px;
+    margin: 0 5px;
+    width: 80px;
+    border: 1px solid #AA6817;
+    cursor: pointer;
+    outline: none;  
+}
+
+.BuildControl div{
+    width: 50px; 
+}

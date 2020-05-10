@@ -3,11 +3,28 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import thunk from 'redux-thunk'
+import { Provider } from 'react-redux'
+import { createStore, applyMiddleware } from 'redux'
+import reducer from './redux/reducers'
+
+
+const logger = (store) => {
+  return (next) => {
+    return (action) => {
+      console.log("Dispatching ", action);
+      let result = next(action);
+      console.log("Dispatch Result ", store.getState())
+      return result
+    }
+  }
+}
+const store = createStore(reducer, applyMiddleware(thunk,logger))
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+      <App />
+  </Provider>,
   document.getElementById('root')
 );
 

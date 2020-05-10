@@ -1,26 +1,58 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Layout from './components/Layout/Layout'
+import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder'
+import Login from './containers/Login/Login'
+import Spinner from './components/UI/Spinner/Spinner'
+import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom'
+import { authCheckSession } from './redux/actions'
+import { connect } from 'react-redux'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const Checkout = React.lazy(() => import('./containers/Checkout/Checkout'));
+const Orders = React.lazy(() => import('./containers/Orders/Orders'));
+
+class App extends React.Component {
+
+  componentWillMount() {
+    this.props.authCheckSession();
+  }
+
+  render() {
+    let routes;
+    if (this.props.auth.authenticated) {
+      routes = <Switch>
+        <Route path='/' exact component={BurgerBuilder} />
+        <Route path='/checkout' component={Checkout} />
+        <Route path='/orders' component={Orders} />
+        <Route path='/login' component={Login} />
+        <Redirect to="/" />
+      </Switch>
+    }
+    else {
+      routes = <Switch>
+        <Route path='/' exact component={BurgerBuilder} />
+        <Route path='/login' component={Login} />
+        <Redirect to="/" />
+      </Switch>
+    }
+
+    return (
+      <div>
+        <BrowserRouter>
+          <React.Suspense fallback={<Spinner/>}>
+            <Layout>
+              {routes}
+            </Layout>
+          </React.Suspense>
+        </BrowserRouter>
+      </div>
+    )
+  }
 }
 
-export default App;
+const mapSatetToProps = (state) => {
+  return {
+    auth: state.auth
+  }
+}
+
+export default connect(mapSatetToProps, { authCheckSession })(App);
