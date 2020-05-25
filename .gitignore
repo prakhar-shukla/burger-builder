@@ -10,7 +10,8 @@
 
 # production
 /build
-/keys
+keys/
+keys.js
 
 #deployment
 .firebase/
